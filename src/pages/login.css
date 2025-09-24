@@ -1,0 +1,17 @@
+#login-button{
+    display: flex;
+    justify-content: end;
+}
+*{
+    padding: 0;
+}
+.container{
+    padding: 0;
+}
+.butsi{
+    display: inline;
+    color: white;
+}
+.butsi:hover{
+    color: black;
+}
