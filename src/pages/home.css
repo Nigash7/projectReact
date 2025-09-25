@@ -1,0 +1,8 @@
+.container{
+    flex-direction: column;
+}
+.card{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}

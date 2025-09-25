@@ -48,6 +48,8 @@ function Form() {
       if (user) {
         setSuccess("Login successful!");
         console.log("Logged in user:", user);
+         // Save user info in localStorage
+       localStorage.setItem("loggedInUser", JSON.stringify(user));
 
         // Optional: redirect to dashboard or home
         navigate("/home"); // change path if you have a dashboard

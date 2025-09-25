@@ -5,6 +5,8 @@ import Router from  './pages/router.js'
 import { BrowserRouter,Routes,Route} from 'react-router-dom'
 import NavBar from './pages/navbar.js'
 import Home from './pages/HomePage.js'
+import ProtectedRoute from "./pages/Protected_Route.js";
+import Compare from './pages/Compare.js';
 
 function App() {
    
@@ -19,8 +21,18 @@ function App() {
       {/* Root ("/") */}
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
-      <Route path='/home' element={<Home />} />
+      <Route path='/home' element={<ProtectedRoute>
+              <Home />
+            </ProtectedRoute>} />
       <Route index element={<Signup/>} />
+       <Route
+          path="/compare"
+          element={
+            <ProtectedRoute>
+              <Compare />
+            </ProtectedRoute>
+          }
+        />
       
 
     </Routes>
