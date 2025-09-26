@@ -1,15 +1,21 @@
 import React from 'react'
 import {NavLink} from 'react-router-dom'
+import './navbar.css'
 
 function navbar() {
   return (
-    <div>
-        <ul>
-           <NavLink to='/home'><li>Home</li></NavLink> 
-            <NavLink to='/login'><li>Login</li></NavLink> 
-             <NavLink to='/signup'><li>Signup</li></NavLink> 
+    <div className='navio'>
+        <nav>
+           <NavLink className="NavLink" to='/home'>Home</NavLink> 
+            <NavLink className="NavLink" to='/login'>Login</NavLink> 
+             <NavLink className="NavLink" to='/signup'>Signup</NavLink>
+              <NavLink className="NavLink" to='/logout'>Logout</NavLink>
+
+
+              
+
             
-        </ul>
+        </nav>
 
       
     </div>

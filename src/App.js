@@ -7,6 +7,7 @@ import NavBar from './pages/navbar.js'
 import Home from './pages/HomePage.js'
 import ProtectedRoute from "./pages/Protected_Route.js";
 import Compare from './pages/Compare.js';
+import Logout from './pages/Logout.js'
 
 function App() {
    
@@ -30,6 +31,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Compare />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/logout"
+          element={
+            <ProtectedRoute>
+              <Logout />
             </ProtectedRoute>
           }
         />

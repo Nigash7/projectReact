@@ -6,3 +6,21 @@
     flex-direction: column;
     flex-wrap: wrap;
 }
+#add{
+    margin: 0 10px;
+}
+.heading{
+    padding: 20px 0;
+}
+#edit{
+    margin: 0 10px;
+}
+strong{
+    padding: 0px 10px;
+}
+#h5{
+    display: inline;
+}
+#check{
+    margin: 0px 30px;
+}

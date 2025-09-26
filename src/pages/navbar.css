@@ -1,0 +1,19 @@
+nav{
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    align-items: center;
+}
+.navio{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    height: 50px;
+
+}
+hr{
+    margin: 0;
+}
+.NavLink{
+    padding: 0 10px;
+}

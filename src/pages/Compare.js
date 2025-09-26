@@ -25,7 +25,7 @@ function Compare() {
           <div key={index} className="col-md-6">
             <div className="card p-3 mb-3">
               <h5>Item {index + 1}</h5>
-              <p><strong>Text:</strong> {item.text}</p>
+              <p><strong>Weight:</strong> {item.text}</p>
               <p><strong>Date:</strong> {item.date}</p>
             </div>
           </div>

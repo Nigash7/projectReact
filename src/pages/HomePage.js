@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from './navbar.js'
 
 function Home() {
   const [item, setItem] = useState("");
@@ -8,10 +9,14 @@ function Home() {
   const [selected, setSelected] = useState([]);
   const navigate = useNavigate();
 
+  
+
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4; // change this to show more/less items per page
-
+   
+  const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+  const storageKey = loggedInUser ? `todoList_${loggedInUser.email}` : null;
   // Add or update item
   const handleAdd = () => {
   if (item.trim() === "") return;
@@ -70,26 +75,42 @@ function Home() {
     const itemsToCompare = selected.map((i) => list[i]);
     navigate("/compare", { state: { itemsToCompare } });
   };
+   // Load list from localStorage on page load
+  useEffect(() => {
+    const savedList = JSON.parse(localStorage.getItem("todoList"));
+    if (savedList) {
+      setList(savedList);
+    }
+  }, []);
+
+  //  Save list to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("todoList", JSON.stringify(list));
+  }, [list]);
 
   return (
-    <div className="container mt-4">
-      <h2>Home Page</h2>
+    <div>
+    <Navbar />
+    <hr></hr>
+    <div className="container mt-4 col-12">
+      <h2 className="heading" >Weight loss management sight </h2>
 
-      <div className="d-flex mb-3">
+      <div className="d-flex mb-3 col-6">
+        <h4 className="col-4"> Current weight</h4>
         <input
-          type="text"
+          type="number"
           value={item}
           onChange={(e) => setItem(e.target.value)}
           placeholder="Enter item"
-          className="form-control me-2"
+          className="form-control me-2 col-5"
         />
-        <button onClick={handleAdd} className="btn btn-primary">
+        <button onClick={handleAdd} id="add" className="btn btn-primary">
           {editIndex !== null ? "Update" : "Add"}
         </button>
       </div>
 
       {/* List */}
-      <ul className="list-group">
+      <ul className="list-group col-6">
         {currentItems.map((liItem, index) => (
           <li
             key={firstIndex + index} // correct key for pagination
@@ -97,24 +118,26 @@ function Home() {
           >
             <div>
 
-              <strong>{liItem.text}</strong>
-              <br />
-              <small className="text-muted">{liItem.date}</small>
+              <h5 id="h5">  <strong >{liItem.text} <small> kg</small> </strong></h5>
+              
+              <medium className="text-muted">{liItem.date}</medium>
+              
+            </div>
+            <div>
                <input
+               id="check"
                 type="checkbox"
                 className="me-2"
                 checked={selected.includes(index)}
                 onChange={() => handleCheckbox(index)}
               />
-            </div>
-            <div>
-              <button
+              <button  id="edit"
                 onClick={() => handleEdit(firstIndex + index)}
                 className="btn btn-sm btn-warning me-2"
               >
                 Edit
               </button>
-              <button
+              <button id="edit"
                 onClick={() => handleDelete(firstIndex + index)}
                 className="btn btn-sm btn-danger"
               >
@@ -148,7 +171,7 @@ function Home() {
           ))}
         </div>
       )}
-    </div>
+    </div></div>
   );
 }
 
