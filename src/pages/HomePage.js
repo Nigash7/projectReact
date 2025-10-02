@@ -8,8 +8,10 @@ function Home() {
   const [editIndex, setEditIndex] = useState(null);
   const [selected, setSelected] = useState([]);
   const navigate = useNavigate();
+  const [deleteIndex, setDeleteIndex] = useState(null); // track which item to delete
 
-  // Pagination
+
+  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
 
@@ -21,34 +23,59 @@ function Home() {
     if (item.trim() === "") return;
 
     const now = new Date();
+    const dateOnly = now.toLocaleDateString(); // only date (no time)
     const dateStr = now.toLocaleString();
 
-    if (editIndex !== null) {
-      // Update existing item
+    // Check if today already exists
+    const existingIndex = list.findIndex((entry) => entry.dateOnly === dateOnly);
+
+    if (existingIndex !== -1) {
+      // Replace today’s entry
       const updatedList = [...list];
-      updatedList[editIndex] = { text: item, date: dateStr };
+      updatedList[existingIndex] = { text: item, date: dateStr, dateOnly };
+      setList(updatedList);
+    } else if (editIndex !== null) {
+      // Manual edit
+      const updatedList = [...list];
+      updatedList[editIndex] = { text: item, date: dateStr, dateOnly };
       setList(updatedList);
       setEditIndex(null);
     } else {
-      // Add new item at beginning
-      setList([{ text: item, date: dateStr }, ...list]);
+      // Add new item at the beginning
+      setList([{ text: item, date: dateStr, dateOnly }, ...list]);
     }
 
     setItem("");
   };
 
   const handleDelete = (index) => {
+    if(window.confirm("Are you sure you want to delete this item?")){
     const updatedList = list.filter((_, i) => i !== index);
     setList(updatedList);
-    setSelected(selected.filter((i) => i !== index)); // clear from selected if deleted
+    setSelected(selected.filter((i) => i !== index));}
+    
   };
+  const handleDeleteClick = (index) => {
+  setDeleteIndex(index); // set the item index to delete
+  const modal = new window.bootstrap.Modal(document.getElementById("deleteModal"));
+  modal.show();
+};
+const confirmDelete = () => {
+  if (deleteIndex !== null) {
+    const updatedList = list.filter((_, i) => i !== deleteIndex);
+    setList(updatedList);
+    setSelected(selected.filter((i) => i !== deleteIndex));
+    setDeleteIndex(null);
+  }
+};
+
 
   const handleEdit = (index) => {
     setItem(list[index].text);
     setEditIndex(index);
   };
 
-  // Pagination
+  // Pagination logic
   const lastIndex = currentPage * itemsPerPage;
   const firstIndex = lastIndex - itemsPerPage;
   const currentItems = list.slice(firstIndex, lastIndex);
@@ -74,19 +101,43 @@ function Home() {
     navigate("/compare", { state: { itemsToCompare } });
   };
 
-  // Load from localStorage
+  // Load list from localStorage on page load
   useEffect(() => {
     const savedList = JSON.parse(localStorage.getItem(storageKey));
-    if (savedList) setList(savedList);
+    if (savedList) {
+      setList(savedList);
+    }
   }, [storageKey]);
 
-  // Save to localStorage
+  // Save list to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(list));
   }, [list, storageKey]);
 
   return (
+   
     <div>
+       {/* // ----------------------------------------------------------- ---------------*/}
+    <div className="modal fade" id="deleteModal" tabIndex="-1" aria-hidden="true">
+  <div className="modal-dialog">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title">Confirm Delete</h5>
+        
+      </div>
+      <div className="modal-body">
+        Are you sure you want to delete this weight?
+      </div>
+      <div className="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" >close</button>
+        <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={confirmDelete}>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+  {/* ---------------------------------------------------------------------------------------------- */}
       <Navbar />
       <hr />
       <div className="container mt-4 col-12">
@@ -98,7 +149,7 @@ function Home() {
             type="number"
             value={item}
             onChange={(e) => setItem(e.target.value)}
-            placeholder="Enter item"
+            placeholder="Enter weight"
             className="form-control me-2 col-5"
           />
           <button onClick={handleAdd} id="add" className="btn btn-primary">
@@ -106,10 +157,10 @@ function Home() {
           </button>
         </div>
 
-        {/* List */}
+        
         <ul className="list-group col-6">
           {currentItems.map((liItem, index) => {
-            const absoluteIndex = firstIndex + index; // real index in full list
+            const absoluteIndex = firstIndex + index;
             return (
               <li
                 key={absoluteIndex}
@@ -137,9 +188,10 @@ function Home() {
                   >
                     Edit
                   </button>
-                  <button
-                    onClick={() => handleDelete(absoluteIndex)}
+                  <button 
+                   onClick={() => handleDeleteClick(index)}
                     className="btn btn-sm btn-danger"
+                     data-toggle="modal" data-target="#exampleModal"
                   >
                     Delete
                   </button>
@@ -157,7 +209,7 @@ function Home() {
           Compare Selected
         </button>
 
-        {/* Pagination */}
+        {/* Pagination controls */}
         {totalPages > 1 && (
           <div className="mt-3">
             {Array.from({ length: totalPages }, (_, i) => (
